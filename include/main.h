@@ -4,8 +4,7 @@
 struct Text {
     char* text;
     size_t text_len;
-    char *buffer;
-    size_t buffer_len;
+    struct stat statistics;
 }
 
 #endif

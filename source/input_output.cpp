@@ -6,3 +6,4 @@
 #include "main.h"
 
 Errors read_from_file_to_text(struct Text *onegin, FILE *input){
+
