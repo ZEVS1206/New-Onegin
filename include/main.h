@@ -3,7 +3,8 @@
 #include <sys/stat.h>
 
 struct Text {
-    char* text;
+    char **text;
+    char *buffer;
     size_t text_len;
     struct stat statistics;
     const char *filename;

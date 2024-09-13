@@ -12,7 +12,8 @@ int main(){
     struct Text onegin = {};
     onegin.filename = "source//Input.txt";
     onegin.file_pointer = input;
-    error = read_from_file_to_text(&onegin);
+    //error = read_from_file_to_text(&onegin);
+    error = special_printf("%d\n", 123);
     if (error != NO_ERRORS){
         return -1;
     }
