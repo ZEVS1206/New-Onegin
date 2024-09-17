@@ -2,7 +2,8 @@
 #define MAIN_H
 #include <sys/stat.h>
 
-struct Text {
+struct Text
+{
     char **text;
     char *buffer;
     size_t text_len;
