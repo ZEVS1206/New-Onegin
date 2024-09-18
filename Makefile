@@ -21,7 +21,7 @@ all: $(BUILD_DIR)/$(EXEC_NAME)
 $(BUILD_DIR)/$(EXEC_NAME): $(OBJECTS) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(HEADERS_DIR)/%.h | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $< -c -o $@
 
 $(BUILD_DIR):

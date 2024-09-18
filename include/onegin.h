@@ -1,15 +1,16 @@
-#ifndef MAIN_H
-#define MAIN_H
-#include <sys/stat.h>
+#ifndef ONEGIN_H
+#define ONEGIN_H
+#include "input_output.h"
+#include "string_functions.h"
 
 struct Text
 {
     char **text;
     char *buffer;
     size_t text_len;
-    struct stat statistics;
     const char *filename;
     FILE *file_pointer;
 };
 
 #endif
+
