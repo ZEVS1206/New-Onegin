@@ -5,7 +5,7 @@
 
 struct Text
 {
-    char **text;
+    Row *text;
     char *buffer;
     size_t text_len;
     const char *filename;

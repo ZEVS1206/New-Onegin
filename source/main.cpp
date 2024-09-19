@@ -22,12 +22,14 @@ int main()
         return -1;
     }
     error = read_from_file_to_text(&onegin);
+    //printf("Here\n");
     //error = special_printf("%y\n\0", "abcd");
     if (error != NO_ERRORS)
     {
         fprintf(stderr, "%d\n", error);
         return -1;
     }
+    //printf("Here\n");
     error = sort_text(&onegin);
     if (error != NO_ERRORS)
     {

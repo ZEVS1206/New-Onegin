@@ -10,7 +10,7 @@
 #include "onegin.h"
 
 static Errors replace_bad_symbols(size_t size_of_file, size_t *index_of_element_in_text, char *buffer);
-static Errors save_address_of_row(int *number_of_row, char **text, char *buffer, size_t *index_of_element_in_text);
+static Errors save_address_of_row(int *number_of_row, Row *text, char *buffer, size_t *index_of_element_in_text);
 static Errors skip_symbols_in_row(size_t size_of_file, size_t *index_of_element_in_text, char *buffer);
 
 Errors special_printf(char *format, ...)
@@ -114,7 +114,7 @@ static Errors replace_bad_symbols(size_t size_of_file, size_t *index_of_element_
     return NO_ERRORS;
 }
 
-static Errors save_address_of_row(int *number_of_row, char **text, char *buffer, size_t *index_of_element_in_text)
+static Errors save_address_of_row(int *number_of_row, Row *text, char *buffer, size_t *index_of_element_in_text)
 {
     if (text == NULL || buffer == NULL || number_of_row == NULL || index_of_element_in_text == NULL)
     {
@@ -126,7 +126,15 @@ static Errors save_address_of_row(int *number_of_row, char **text, char *buffer,
     if (isalpha(buffer[ind]))
     {
         //printf("Here\n");
-        text[nor] = &(buffer[ind]);
+        (text[nor]).start_pointer = &(buffer[ind]);
+        //printf("Here\n");
+        size_t k = ind;
+        for (; buffer[k] != '\n'; k++)
+        {
+            ;
+        }
+        k++;
+        (text[nor]).end_pointer = &(buffer[k]);
         //printf("%s\n", text[nor]);
         //printf("%p\n", (onegin->text)[cnt]);
     }
@@ -172,7 +180,6 @@ Errors read_from_file_to_text(struct Text *onegin)
     }
     //assert(onegin->buffer != NULL);
     size_t result_of_reading = fread(onegin->buffer, sizeof(char), size_of_file, (onegin->file_pointer));
-
     if (result_of_reading != size_of_file)
     {
         return ERROR_OF_READING_FROM_FILE;
@@ -200,7 +207,7 @@ Errors read_from_file_to_text(struct Text *onegin)
     }
     //printf("num_of_rows-%u\n", num_of_rows);
     onegin->text_len = num_of_rows;
-    onegin->text = (char**)calloc(num_of_rows + 2, sizeof(char*));
+    onegin->text = (Row*)calloc(num_of_rows + 2, sizeof(Row));
     if (onegin->text == NULL)
     {
         return ERROR_OF_READING_FROM_FILE;
@@ -252,10 +259,9 @@ Errors print_to_console(struct Text *onegin)
     }
     for (size_t i = 0; i < (onegin->text_len); i++)
     {
-        char *str = (onegin->text)[i];
-        if (str == NULL)
-        {
-            //printf("i-%d\n", i);
+        Row s = (onegin->text)[i];
+        char *str = s.start_pointer;
+        if (str == NULL){
             return ERROR_OF_PRINTING;
         }
         for(; *str != '\0'; str++)
@@ -276,7 +282,8 @@ Errors output_text_to_file(struct Text *onegin)
     FILE *out_pointer = fopen("source//Output.txt", "wb");
     size_t i = 0;
     while (i < (onegin->text_len)){
-        char *string = (onegin->text)[i];
+        Row s = (onegin->text)[i];
+        char *string = s.start_pointer;
         while (*string != '\0'){
             fputc(*string, out_pointer);
             string++;
