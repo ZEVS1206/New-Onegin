@@ -14,9 +14,6 @@ struct Row
     char *end_pointer;
 };
 
-
-Errors my_strcmp(const struct Row str1, const struct Row str2, int *answer, Compare_mode mode);
-Errors change_strings(Row *text, size_t i, size_t j);
-Errors sort_text(struct Text *onegin);
+Errors sort_text(struct Text *onegin, Compare_mode mode);
 
 #endif

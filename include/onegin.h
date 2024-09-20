@@ -10,6 +10,7 @@ struct Text
     size_t text_len;
     const char *filename;
     FILE *file_pointer;
+    size_t size_of_file;
 };
 
 #endif

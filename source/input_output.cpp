@@ -3,17 +3,19 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
+#include <inttypes.h>
 #include <stdarg.h>
+#include <string.h>
 #include <sys/stat.h>
 
 
 #include "onegin.h"
-
+//static Errors special_printf(char *format, ...);
 static Errors replace_bad_symbols(size_t size_of_file, size_t *index_of_element_in_text, char *buffer);
 static Errors save_address_of_row(int *number_of_row, Row *text, char *buffer, size_t *index_of_element_in_text);
 static Errors skip_symbols_in_row(size_t size_of_file, size_t *index_of_element_in_text, char *buffer);
 
-Errors special_printf(char *format, ...)
+/*static Errors special_printf(char *format, ...)
 {
     char *pointer = format;
     int i = 0;
@@ -56,9 +58,9 @@ Errors special_printf(char *format, ...)
                 }
                 str = (char *)calloc(cnt, sizeof(char));
                 //assert(str != NULL);
-                /*if (str == NULL){
-                    return ERROR_OF_PRINTING;
-                }*/
+                // if (str == NULL){
+                //     return ERROR_OF_PRINTING;
+                // }
                 itoa(i, str, 10);
                 puts(str);
                 free(str);
@@ -92,7 +94,7 @@ Errors special_printf(char *format, ...)
     }
     va_end(arg);
     return NO_ERRORS;
-}
+}*/
 
 static Errors replace_bad_symbols(size_t size_of_file, size_t *index_of_element_in_text, char *buffer)
 {
@@ -114,27 +116,28 @@ static Errors replace_bad_symbols(size_t size_of_file, size_t *index_of_element_
     return NO_ERRORS;
 }
 
+// save_row_address                                             const
 static Errors save_address_of_row(int *number_of_row, Row *text, char *buffer, size_t *index_of_element_in_text)
 {
-    if (text == NULL || buffer == NULL || number_of_row == NULL || index_of_element_in_text == NULL)
+    if (text          == NULL ||
+        buffer        == NULL ||
+        number_of_row == NULL || index_of_element_in_text == NULL)
     {
         return ERROR_OF_READING_FROM_FILE;
     }
     int nor = *number_of_row;
     size_t ind = *index_of_element_in_text;
     //printf("i-%u\n", *index_of_element_in_text);
+    //printf("element-%c\n", buffer[ind]);
+
     if (isalpha(buffer[ind]))
     {
         //printf("Here\n");
-        (text[nor]).start_pointer = &(buffer[ind]);
+        text[nor].start_pointer = &buffer[ind];
         //printf("Here\n");
-        size_t k = ind;
-        for (; buffer[k] != '\n'; k++)
-        {
-            ;
-        }
-        k++;
-        (text[nor]).end_pointer = &(buffer[k]);
+        char *end = strchr(text[nor].start_pointer, '\n');
+        //printf("start_pointer-%p\nend_pointer-%p\n", text[nor].start_pointer, end);
+        text[nor].end_pointer = end;
         //printf("%s\n", text[nor]);
         //printf("%p\n", (onegin->text)[cnt]);
     }
@@ -147,19 +150,31 @@ static Errors save_address_of_row(int *number_of_row, Row *text, char *buffer, s
 
 static Errors skip_symbols_in_row(size_t size_of_file, size_t *index_of_element_in_text, char *buffer)
 {
-    size_t ind = *index_of_element_in_text;
+    size_t ind = *index_of_element_in_text - 1;
+    if (ind == size_of_file)
+    {
+        return NO_ERRORS;
+    }
     if (buffer == NULL || index_of_element_in_text == NULL)
     {
         return ERROR_OF_READING_FROM_FILE;
     }
-    while (ind < size_of_file && buffer[ind] != '\r')
+    //printf("ind-%d\n", ind);
+    char *start = &(buffer[ind]);
+    char *end = strchr(start, '\r');
+    //printf("end-%p\n", end);
+    //printf("end-start=%d\n", (size_t)end - (size_t)start);
+    if (end == NULL)
     {
-            //printf("symbol-%d\n", (onegin->buffer)[i]);
-            //printf("i-%d\n", i);
-            //printf("ind-%d\n", ind);
-            ind++;
+        //fprintf(stderr, "Here1\n");
+        *index_of_element_in_text = size_of_file;
+    } else
+    {
+        //fprintf(stderr, "Here\n");
+        //printf("end-%p\nstart-%p\n", end, start);
+        *index_of_element_in_text = ind + (size_t)((uint64_t)end - (uint64_t)start);
+        //printf("index_of_element_in_text-%u\n", *index_of_element_in_text);
     }
-    *index_of_element_in_text = ind;
     return NO_ERRORS;
 }
 
@@ -173,6 +188,7 @@ Errors read_from_file_to_text(struct Text *onegin)
     }
     //printf("size-%ld\n", (onegin->statistics).st_size);
     size_t size_of_file = statistics.st_size;
+    onegin->size_of_file = size_of_file;
     onegin->buffer = (char *)calloc(size_of_file, sizeof(char));
     if (onegin->buffer == NULL)
     {
@@ -242,10 +258,10 @@ Errors read_from_file_to_text(struct Text *onegin)
     //     printf("%p\n", (onegin->text)[t]);
     // }
     // printf("%s\n", (onegin->text)[0]);
-    /*for (int k = 0; k < num_of_rows; k++){
-        printf("k-%d\n", k);
-        printf("%s\n", (onegin->text)[k]);
-    }*/
+    // for (int k = 0; k < num_of_rows; k++){
+    //     printf("k-%d\n", k);
+    //     printf("%p %p\n", (onegin->text)[k].start_pointer, (onegin->text)[k].end_pointer);
+    // }
     /*free(onegin->text);
     free(onegin->buffer);*/
     return NO_ERRORS;

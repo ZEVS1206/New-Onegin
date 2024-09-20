@@ -6,13 +6,21 @@
 
 #include "onegin.h"
 
-Errors my_strcmp(const struct Row str1, const struct Row str2, int *answer, Compare_mode mode)
+static Errors my_strcmp(const struct Row str1, const struct Row str2, int *answer, Compare_mode mode);
+static Errors change_strings(Row *text, size_t i, size_t j);
+
+static Errors my_strcmp(const struct Row str1, const struct Row str2, int *answer, Compare_mode mode)
 {
     if (str1.start_pointer == NULL ||
         str1.end_pointer   == NULL ||
         str2.start_pointer == NULL ||
         str2.end_pointer   == NULL)
     {
+        // printf("str1.start_pointer-%p\n str1.end_pointer-%p\n str2.start_pointer-%p\n str2.end_pointer-%p\n",
+        //         str1.start_pointer,
+        //         str1.end_pointer,
+        //         str2.start_pointer,
+        //         str2.end_pointer);
         return ERROR_OF_SORTING;
     }
     if (mode == FORWARD)
@@ -56,7 +64,7 @@ Errors my_strcmp(const struct Row str1, const struct Row str2, int *answer, Comp
     return NO_ERRORS;
 }
 
-Errors change_strings(Row *text, size_t i, size_t j)
+static Errors change_strings(Row *text, size_t i, size_t j)
 {
     if (text == NULL)
     {
@@ -68,9 +76,8 @@ Errors change_strings(Row *text, size_t i, size_t j)
     return NO_ERRORS;
 }
 
-Errors sort_text(struct Text *onegin)
+Errors sort_text(struct Text *onegin, Compare_mode mode)
 {
-    Compare_mode mode = FORWARD;
     if (onegin == NULL)
     {
         return ERROR_OF_SORTING;

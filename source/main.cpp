@@ -3,21 +3,18 @@
 #include <stdlib.h>
 
 #include "onegin.h"
-static Errors onegin_constructor(const char *filename, FILE *file_pointer, struct Text *onegin);
+static Errors onegin_constructor(const char *filename, struct Text *onegin);
+static Errors onegin_destructor(struct Text *onegin);
 
 int main()
 {
     Errors error = NO_ERRORS;
-    FILE *input = fopen("source//Input.txt", "rb");
-    if (input == NULL)
-    {
-        fprintf(stderr, "%d\n", error);
-        return -1;
-    }
     struct Text onegin = {};
-    error = onegin_constructor("source//Input.txt", input, &onegin);
+    Compare_mode mode = FORWARD;
+    error = onegin_constructor("source//Input.txt", &onegin);
     if (error != NO_ERRORS)
     {
+        error = onegin_destructor(&onegin);
         fprintf(stderr, "%d\n", error);
         return -1;
     }
@@ -26,13 +23,15 @@ int main()
     //error = special_printf("%y\n\0", "abcd");
     if (error != NO_ERRORS)
     {
+        onegin_destructor(&onegin);
         fprintf(stderr, "%d\n", error);
         return -1;
     }
     //printf("Here\n");
-    error = sort_text(&onegin);
+    error = sort_text(&onegin, mode);
     if (error != NO_ERRORS)
     {
+        onegin_destructor(&onegin);
         fprintf(stderr, "%d\n", error); // FIXME: stderr
         return -1;
     }
@@ -47,21 +46,50 @@ int main()
     error = output_text_to_file(&onegin);
     if (error != NO_ERRORS)
     {
+        onegin_destructor(&onegin);
         fprintf(stderr, "%d\n", error);
         return -1;
     }
-    // onegin_destructor();
+    error = onegin_destructor(&onegin);
+    if (error != NO_ERRORS)
+    {
+        fprintf(stderr, "AAAAAAA, WHAT IS GOING ON! STOP IT, PLEASE!\n");
+        return -1;
+    }
+    fclose(onegin.file_pointer);
     return 0;
 }
 
 
-static Errors onegin_constructor(const char *filename, FILE *file_pointer, struct Text *onegin)
+static Errors onegin_constructor(const char *filename, struct Text *onegin)
 {
-    if (filename == NULL || file_pointer == NULL || onegin == NULL)
+    if (filename == NULL || onegin == NULL)
     {
         return ERROR_OF_READING_FROM_FILE;
     }
     onegin->filename = filename;
-    onegin->file_pointer = file_pointer;
+    onegin->file_pointer = fopen(filename, "rb");
+    return NO_ERRORS;
+}
+
+static Errors onegin_destructor(struct Text *onegin)
+{
+    if (onegin == NULL)                                                                                 onegin = NULL;
+    {
+        return ERROR_OF_DESTRUCTION;
+    }
+    for (size_t i = 0; i < (onegin->text_len); i++)
+    {
+        (onegin->text)[i].start_pointer = NULL;
+        (onegin->text)[i].end_pointer = NULL;
+    }
+    for (size_t i = 0; i < (onegin->size_of_file); i++)
+    {
+        (onegin->buffer)[i] = '\0';
+    }
+    free(onegin->buffer);
+    free(onegin->text);
+    fclose(onegin->file_pointer);
+    free(onegin);
     return NO_ERRORS;
 }
