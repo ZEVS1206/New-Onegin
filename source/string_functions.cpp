@@ -16,11 +16,11 @@ static Errors my_strcmp(const struct Row str1, const struct Row str2, int *answe
         str2.start_pointer == NULL ||
         str2.end_pointer   == NULL)
     {
-        // printf("str1.start_pointer-%p\n str1.end_pointer-%p\n str2.start_pointer-%p\n str2.end_pointer-%p\n",
-        //         str1.start_pointer,
-        //         str1.end_pointer,
-        //         str2.start_pointer,
-        //         str2.end_pointer);
+        printf("str1.start_pointer-%p\n str1.end_pointer-%p\n str2.start_pointer-%p\n str2.end_pointer-%p\n",
+                str1.start_pointer,
+                str1.end_pointer,
+                str2.start_pointer,
+                str2.end_pointer);
         return ERROR_OF_SORTING;
     }
     if (mode == FORWARD)

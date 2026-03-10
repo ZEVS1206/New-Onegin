@@ -32,7 +32,7 @@ int main()
     if (error != NO_ERRORS)
     {
         onegin_destructor(&onegin);
-        fprintf(stderr, "%d\n", error); // FIXME: stderr
+        fprintf(stderr, "%d\n", error);
         return -1;
     }
     //error = change_strings(onegin.text, 0, 1);
@@ -56,7 +56,7 @@ int main()
         fprintf(stderr, "AAAAAAA, WHAT IS GOING ON! STOP IT, PLEASE!\n");
         return -1;
     }
-    fclose(onegin.file_pointer);
+    //fclose(onegin.file_pointer);
     return 0;
 }
 
@@ -74,7 +74,7 @@ static Errors onegin_constructor(const char *filename, struct Text *onegin)
 
 static Errors onegin_destructor(struct Text *onegin)
 {
-    if (onegin == NULL)                                                                                 onegin = NULL;
+    if (onegin == NULL)
     {
         return ERROR_OF_DESTRUCTION;
     }
@@ -90,6 +90,6 @@ static Errors onegin_destructor(struct Text *onegin)
     free(onegin->buffer);
     free(onegin->text);
     fclose(onegin->file_pointer);
-    free(onegin);
+    //free(onegin);
     return NO_ERRORS;
 }
