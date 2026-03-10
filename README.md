@@ -62,8 +62,8 @@ Onegin/
 ### Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/Onegin.git
-cd Onegin
+git clone https://github.com/yourusername/New-Onegin.git
+cd New-Onegin
 ```
 
 ### Prepare your text
@@ -89,7 +89,7 @@ make run
 2. The text is split into separate lines.
 3. An array of pointers to these lines is created.
 4. The array is sorted using a custom comparator.
-5. The sorted result is written to console.
+5. The sorted result is written to filt **Output.txt**.
 
 This approach avoids unnecessary copying and allows efficient sorting of large text datasets.
 
